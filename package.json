@@ -37,7 +37,6 @@
     "socket.io-client": "4.1.2"
   },
   "devDependencies": {
-    "cross-env": "7.0.3",
     "@emotion/eslint-plugin": "11.2.0",
     "@italodeandra/pijama": "0.7.0",
     "@types/lodash": "4.14.170",
