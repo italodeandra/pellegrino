@@ -18,7 +18,7 @@
     "publish:yalc": "npm run pre-publish && cd dist && yalc publish --private",
     "dev": "nodemon",
     "build": "next build && tsc --project tsconfig.server.json",
-    "start": "node dist/index.js",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
     "test": "echo \"not implemented\"",
     "lint": "next lint",
     "coverage": "jest --coverage",
@@ -37,6 +37,7 @@
     "socket.io-client": "4.1.2"
   },
   "devDependencies": {
+    "cross-env": "7.0.3",
     "@emotion/eslint-plugin": "11.2.0",
     "@italodeandra/pijama": "0.7.0",
     "@types/lodash": "4.14.170",
