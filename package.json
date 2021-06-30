@@ -1,0 +1,78 @@
+{
+  "name": "@italodeandra/pellegrino",
+  "version": "0.1.0",
+  "description": "Isomorphic Mongoose for Next.js",
+  "private": true,
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "scripts": {
+    "prepare": "husky install",
+    "prebuild:lib": "shx rm -rf dist",
+    "build:lib": "tsc --build lib/tsconfig.json",
+    "postbuild:lib": "shx cp package.json readme.md dist",
+    "pre-publish": "npm run build:lib && cd dist && json -I -f package.json -e \"this.private=false; this.devDependencies=undefined; this.scripts=undefined;\"",
+    "publish:github": "npm run pre-publish && cd dist && npm publish",
+    "publish:yalc": "npm run pre-publish && cd dist && yalc publish --private",
+    "dev": "nodemon",
+    "build": "next build && tsc --project tsconfig.server.json",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
+    "test": "echo \"not implemented\"",
+    "lint": "next lint",
+    "coverage": "jest --coverage",
+    "pre-commit": "lint-staged",
+    "pre-push": "npm test"
+  },
+  "dependencies": {
+    "lodash": "4.17.21",
+    "mongodb": "3.6.9",
+    "mongoose": "5.13.0",
+    "next": "11.0.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-query": "3.16.0",
+    "socket.io": "4.1.2",
+    "socket.io-client": "4.1.2"
+  },
+  "devDependencies": {
+    "@emotion/eslint-plugin": "11.2.0",
+    "@italodeandra/pijama": "0.7.0",
+    "@types/lodash": "4.14.170",
+    "@types/react": "17.0.11",
+    "axios": "0.21.1",
+    "babel-plugin-macros": "3.1.0",
+    "eslint": "7.29.0",
+    "eslint-config-next": "11.0.1",
+    "eslint-config-react-app": "6.0.0",
+    "husky": "6.0.0",
+    "json": "11.0.0",
+    "lint-staged": "11.0.0",
+    "mongodb-memory-server": "6.9.6",
+    "nodemon": "2.0.8",
+    "prettier": "2.3.0",
+    "shx": "0.3.3",
+    "ts-node": "10.0.0",
+    "typescript": "4.3.4",
+    "valtio": "1.0.6"
+  },
+  "peerDependencies": {
+    "lodash": "4.17.21",
+    "mongodb-memory-server": "6.9.6",
+    "next": "11.0.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "socket.io": "4.1.2",
+    "socket.io-client": "4.1.2"
+  },
+  "author": {
+    "name": "Ítalo Andrade",
+    "email": "italodeandra@gmail.com",
+    "url": "https://italodeandra.de"
+  },
+  "engines": {
+    "node": "14.17.1",
+    "npm": "7.18.1"
+  }
+}
