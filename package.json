@@ -26,6 +26,7 @@
     "pre-push": "npm test"
   },
   "dependencies": {
+    "cross-env": "7.0.3",
     "lodash": "4.17.21",
     "mongodb": "3.6.9",
     "mongoose": "5.13.0",
