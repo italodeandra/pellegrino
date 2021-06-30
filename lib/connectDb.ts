@@ -43,7 +43,6 @@ export const connectDb = async (
       ...options,
     }
 
-    console.info("uri", uri, "NODE_ENV", process.env.NODE_ENV)
     if (!uri && process.env.NODE_ENV !== "production") {
       const mongod = new MongoMemoryServer()
       uri = await mongod.getUri()
