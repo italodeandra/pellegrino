@@ -26,7 +26,6 @@
     "pre-push": "npm test"
   },
   "dependencies": {
-    "cross-env": "7.0.3",
     "lodash": "4.17.21",
     "mongodb": "3.6.9",
     "mongoose": "5.13.0",
@@ -38,6 +37,7 @@
     "socket.io-client": "4.1.2"
   },
   "devDependencies": {
+    "cross-env": "7.0.3",
     "@emotion/eslint-plugin": "11.2.0",
     "@italodeandra/pijama": "0.7.0",
     "@types/lodash": "4.14.170",
