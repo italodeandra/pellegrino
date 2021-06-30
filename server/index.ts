@@ -3,6 +3,7 @@ import next from "next"
 import { Server } from "socket.io"
 
 const dev = process.env.NODE_ENV !== "production"
+const port = process.env.PORT
 const app = next({ dev })
 const handle = app.getRequestHandler()
 
@@ -20,7 +21,7 @@ app.prepare().then(() => {
 
   global.io = new Server(server)
 
-  server.listen(3000, () => {
-    console.info("> Ready on http://localhost:3000")
+  server.listen(port, () => {
+    console.info(`> Ready on http://localhost:${port}`)
   })
 })
