@@ -1,6 +1,6 @@
 {
   "name": "@italodeandra/pellegrino",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Isomorphic Mongoose for Next.js",
   "private": true,
   "main": "index.js",
