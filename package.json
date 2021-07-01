@@ -26,6 +26,7 @@
     "pre-push": "npm test"
   },
   "dependencies": {
+    "axios": "0.21.1",
     "lodash": "4.17.21",
     "mongodb": "3.6.9",
     "mongoose": "5.13.0",
@@ -41,7 +42,6 @@
     "@italodeandra/pijama": "0.7.1",
     "@types/lodash": "4.14.170",
     "@types/react": "17.0.11",
-    "axios": "0.21.1",
     "babel-plugin-macros": "3.1.0",
     "cross-env": "7.0.3",
     "eslint": "7.29.0",
@@ -59,13 +59,15 @@
     "valtio": "1.0.6"
   },
   "peerDependencies": {
+    "axios": "0.21.1",
     "lodash": "4.17.21",
     "mongodb-memory-server": "6.9.6",
     "next": "11.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "socket.io": "4.1.2",
-    "socket.io-client": "4.1.2"
+    "socket.io-client": "4.1.2",
+    "react-query": "3.16.0"
   },
   "author": {
     "name": "Ítalo Andrade",
