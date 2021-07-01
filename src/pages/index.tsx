@@ -1,11 +1,14 @@
 import {
   Button,
+  Checkbox,
   List,
   ListItem,
+  ListItemIcon,
   ListItemText,
+  Skeleton,
+  Stack,
   TextField,
 } from "@italodeandra/pijama"
-import { Checkbox, ListItemIcon, Skeleton, Stack } from "@material-ui/core"
 import { task } from "../entities/task"
 import { useState } from "react"
 
