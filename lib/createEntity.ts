@@ -14,12 +14,14 @@ import axios from "axios"
 import { isServer } from "@italodeandra/pijama"
 import { merge } from "lodash"
 import { Pellegrino } from "./Pellegrino"
+import { Server } from "socket.io"
 
 declare global {
   namespace NodeJS {
     // noinspection JSUnusedGlobalSymbols
     interface Global {
       pellegrinos: Pellegrino[]
+      io: Server
     }
   }
 }
@@ -84,9 +86,9 @@ export function createEntity<SchemaDefinitionType>(
                 const found = await pellegrinoModel.model.findOne(...args)
                 if (found) {
                   socket.emit(hook, found)
-                } /* else {
+                } else {
                   socket.emit("remove", doc._id)
-                }*/
+                }
               }
             }
           )
@@ -203,14 +205,14 @@ export function createEntity<SchemaDefinitionType>(
           }
           queryClient.setQueryData([name, method, args], queryData)
         })
-        /*socket.on("remove", (docId) => {
+        socket.on("remove", (docId) => {
           const queryData =
             queryClient.getQueryData<any[]>([name, method, args]) || []
           queryClient.setQueryData(
             [name, method, args],
             queryData.filter((item) => item._id !== docId)
           )
-        })*/
+        })
         return () => {
           socket.emit("unsubscribe")
         }
