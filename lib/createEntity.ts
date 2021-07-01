@@ -5,14 +5,17 @@ import type {
   Schema,
   SchemaDefinition,
 } from "mongoose"
-import { MongooseDocumentMiddleware, QueryOptions } from "mongoose"
+import {
+  MongooseDocumentMiddleware,
+  QueryOptions,
+  SchemaOptions,
+} from "mongoose"
 import socketIOClient, { Socket } from "socket.io-client"
 import { useDeepCompareEffect, useUpdate } from "react-use"
 import { useEffect, useRef } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import axios from "axios"
 import { isServer } from "@italodeandra/pijama"
-import { merge } from "lodash"
 import { Pellegrino } from "./Pellegrino"
 import { Server } from "socket.io"
 
@@ -30,7 +33,8 @@ global.pellegrinos = []
 
 export function createEntity<SchemaDefinitionType>(
   name: string,
-  definition: SchemaDefinition<DocumentDefinition<SchemaDefinitionType>>
+  definition: SchemaDefinition<DocumentDefinition<SchemaDefinitionType>>,
+  schemaOptions?: SchemaOptions
 ): Pellegrino<SchemaDefinitionType> {
   const existingPellegrino = global.pellegrinos.find(
     (pellegrino) => pellegrino.name === name
@@ -52,7 +56,7 @@ export function createEntity<SchemaDefinitionType>(
   if (isServer) {
     const setServerProperties = async () => {
       const { model: createModel, Schema, models } = await import("mongoose")
-      pellegrinoModel.schema = new Schema(definition)
+      pellegrinoModel.schema = new Schema(definition, schemaOptions)
 
       if (!global.io) {
         console.info(
@@ -60,21 +64,35 @@ export function createEntity<SchemaDefinitionType>(
         )
       } else {
         console.info(`Subscription enabled`)
-        pellegrinoModel.schema.post("save", function (doc) {
+        pellegrinoModel.schema.post(["save"], function (doc) {
           for (const [, hook] of Object.entries(hooks)) {
             hook("save", doc)
           }
         })
 
-        pellegrinoModel.schema.post("updateOne", async function () {
+        pellegrinoModel.schema.post(
+          ["updateOne", "findOneAndUpdate"],
+          async function () {
+            // @ts-ignore
+            const updatedDoc = await this.model.findOne(this.getQuery())
+            for (const [, hook] of Object.entries(hooks)) {
+              hook("save", updatedDoc)
+            }
+          }
+        )
+
+        pellegrinoModel.schema.post("updateMany", async function () {
           // @ts-ignore
-          const updatedDoc = await this.model.findOne(this.getQuery())
+          const updatedDocs = await this.model.find(this.getQuery())
           for (const [, hook] of Object.entries(hooks)) {
-            hook("save", updatedDoc)
+            for (const updatedDoc of updatedDocs) {
+              hook("save", updatedDoc)
+            }
           }
         })
 
         global.io.on("connection", (socket) => {
+          socket.offAny()
           socket.on(
             "subscribe",
             (method: keyof Model<SchemaDefinitionType>, args: any) => {
@@ -82,12 +100,16 @@ export function createEntity<SchemaDefinitionType>(
                 hook: MongooseDocumentMiddleware,
                 doc: any
               ) => {
-                args[0] = args[0] ? { ...args[0], _id: doc._id } : args[0]
-                const found = await pellegrinoModel.model.findOne(...args)
-                if (found) {
-                  socket.emit(hook, found)
+                if (method === "aggregate") {
+                  socket.emit("refetch")
                 } else {
-                  socket.emit("remove", doc._id)
+                  args[0] = args[0] ? { ...args[0], _id: doc._id } : args[0]
+                  const found = await pellegrinoModel.model.findOne(...args)
+                  if (found) {
+                    socket.emit(hook, found)
+                  } else {
+                    socket.emit("remove", doc._id)
+                  }
                 }
               }
             }
@@ -110,6 +132,13 @@ export function createEntity<SchemaDefinitionType>(
   }
 
   const pellegrino: Pellegrino<SchemaDefinitionType> = {
+    aggregate: (async (...props: any) => {
+      if (!isServer) {
+        throw Error(`"aggregate" can only be used from the server`)
+      }
+      await pellegrinoModel.promise
+      return pellegrinoModel.model.aggregate(...props)
+    }) as any,
     create: (async (...props: any) => {
       if (!isServer) {
         throw Error(`"create" can only be used from the server`)
@@ -126,25 +155,34 @@ export function createEntity<SchemaDefinitionType>(
       const filter: FilterQuery<Model<SchemaDefinitionType>> = props[0] || {}
       const projection: any | null | undefined = props[1]
       const options: QueryOptions | null | undefined = props[2]
-      return pellegrinoModel.model.find(
-        filter,
-        "id " + projection,
-        merge<typeof options, typeof options>(
-          {
-            // projection: "id",
-          },
-          options
-        )
-      )
+      return pellegrinoModel.model.find(filter, "id " + projection, options)
     }) as any,
     hooks,
     name,
+    updateMany: (async (...props: any) => {
+      if (!isServer) {
+        throw Error(`"updateMany" can only be used from the server`)
+      }
+      await pellegrinoModel.promise
+      return pellegrinoModel.model.updateMany(...props)
+    }) as any,
     updateOne: (async (...props: any) => {
       if (!isServer) {
         throw Error(`"updateOne" can only be used from the server`)
       }
       await pellegrinoModel.promise
       return pellegrinoModel.model.updateOne(...props)
+    }) as any,
+    upsert: (async (filter: any, update: any, options: any) => {
+      if (!isServer) {
+        throw Error(`"upsert" can only be used from the server`)
+      }
+      await pellegrinoModel.promise
+      return pellegrinoModel.model.findOneAndUpdate(filter, update, {
+        ...options,
+        new: true,
+        upsert: true,
+      })
     }) as any,
     useMutation: (method, options) => {
       const { mutate: originalMutate, ...mutation } = useMutation<
@@ -188,6 +226,7 @@ export function createEntity<SchemaDefinitionType>(
       }, [update])
       useDeepCompareEffect(() => {
         const socket = socketRef.current!
+        socket.offAny()
         socket.emit("unsubscribe")
         socket.emit("subscribe", method, args)
         socket.on("save", (doc) => {
@@ -213,11 +252,14 @@ export function createEntity<SchemaDefinitionType>(
             queryData.filter((item) => item._id !== docId)
           )
         })
+        socket.on("refetch", async () => {
+          await queryClient.refetchQueries([name, method, args])
+        })
         return () => {
           socket.emit("unsubscribe")
         }
       }, [method, args])
-      return pellegrino.useQuery(method, ...args)
+      return pellegrino.useQuery(method, ...(args as any))
     },
   }
 

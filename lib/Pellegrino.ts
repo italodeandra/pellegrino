@@ -17,21 +17,15 @@ type Parameters<T extends (...args: any) => any> = T extends (
   ? P
   : T
 
-// @ts-ignore
-export type Pellegrino<SchemaDefinitionType = any> = {
-  name: string
-  hooks: { [key: string]: (hook: MongooseDocumentMiddleware, doc: any) => void }
+export interface Pellegrino<SchemaDefinitionType = any> {
+  aggregate: Model<SchemaDefinitionType>["aggregate"]
   create: Model<SchemaDefinitionType>["create"]
-  updateOne: Model<SchemaDefinitionType>["updateOne"]
   find: Model<SchemaDefinitionType>["find"]
-  useQuery: <Method extends keyof Model<SchemaDefinitionType>>(
-    method: Method,
-    ...args: Parameters<Model<SchemaDefinitionType>[Method]>
-  ) => UseQueryResult<Await<ReturnType<Model<SchemaDefinitionType>[Method]>>>
-  useSubscription: <Method extends keyof Model<SchemaDefinitionType>>(
-    method: Method,
-    ...args: Parameters<Model<SchemaDefinitionType>[Method]>
-  ) => UseQueryResult<Await<ReturnType<Model<SchemaDefinitionType>[Method]>>>
+  hooks: { [key: string]: (hook: MongooseDocumentMiddleware, doc: any) => void }
+  name: string
+  updateMany: Model<SchemaDefinitionType>["update"]
+  updateOne: Model<SchemaDefinitionType>["updateOne"]
+  upsert: Model<SchemaDefinitionType>["findOneAndUpdate"]
   useMutation: <Method extends keyof Model<SchemaDefinitionType>>(
     method: Method,
     options?: UseMutationOptions<
@@ -43,4 +37,18 @@ export type Pellegrino<SchemaDefinitionType = any> = {
   > & {
     mutate: Model<SchemaDefinitionType>[Method]
   }
+  useQuery: <Method extends keyof Model<SchemaDefinitionType>>(
+    method: Method,
+    ...args: Parameters<Model<SchemaDefinitionType>[Method]>
+  ) => UseQueryResult<Await<ReturnType<Model<SchemaDefinitionType>[Method]>>>
+
+  useSubscription<Method extends keyof Model<SchemaDefinitionType>>(
+    method: "aggregate",
+    pipeline: any[]
+  ): UseQueryResult<Await<ReturnType<Model<SchemaDefinitionType>[Method]>>>
+
+  useSubscription<Method extends keyof Model<SchemaDefinitionType>>(
+    method: Method,
+    ...args: Parameters<Model<SchemaDefinitionType>[Method]>
+  ): UseQueryResult<Await<ReturnType<Model<SchemaDefinitionType>[Method]>>>
 }
