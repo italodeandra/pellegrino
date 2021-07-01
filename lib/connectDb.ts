@@ -8,6 +8,7 @@ declare global {
       mongoose: {
         conn: Mongoose | null
         promise: Promise<Mongoose> | null
+        uri: string | null
       }
     }
   }
@@ -21,7 +22,7 @@ declare global {
 let cached = global.mongoose
 
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null }
+  cached = global.mongoose = { conn: null, promise: null, uri: null }
 }
 
 export const connectDb = async (
@@ -53,6 +54,8 @@ export const connectDb = async (
         `To connect to database the "connectDb" needs the uri to be passed on the first property or to be present on the environment variable "DATABASE_URL".`
       )
     }
+
+    global.mongoose.uri = uri
 
     cached.promise = connect(uri, optionsWithDefaults).then((mongoose) => {
       return mongoose
