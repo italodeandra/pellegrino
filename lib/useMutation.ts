@@ -4,7 +4,7 @@ import Await from "./Await";
 import { useState, useEffect } from "react";
 import isEqual from "lodash/isEqual";
 
-export default function useMutation<Query extends () => any>(query: Query) {
+export default function useMutation<Query>(query: () => Query) {
   const [clientQuery, setClientQuery] = useState<any>();
   useEffect(() => {
     const newQuery = query();

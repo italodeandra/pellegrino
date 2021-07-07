@@ -25,6 +25,7 @@
     "pre-push": "npm test"
   },
   "dependencies": {
+    "@next/bundle-analyzer": "11.0.1",
     "axios": "0.21.1",
     "cross-env": "7.0.3",
     "lodash": "4.17.21",
@@ -36,20 +37,22 @@
     "react-dom": "17.0.2",
     "react-query": "3.18.1",
     "socket.io": "4.1.2",
-    "socket.io-client": "4.1.2",
-    "@next/bundle-analyzer": "11.0.1"
+    "socket.io-client": "4.1.2"
   },
   "devDependencies": {
-    "next-seo": "4.26.0",
     "@italodeandra/pijama": "1.1.0",
+    "@types/jest": "26.0.24",
     "@types/lodash": "4.14.170",
     "@types/react": "17.0.13",
     "eslint": "7.29.0",
     "eslint-config-next": "11.0.1",
     "husky": "6.0.0",
+    "jest": "27.0.6",
+    "jest-circus": "27.0.6",
     "json": "11.0.0",
     "lint-staged": "11.0.0",
     "mongodb-memory-server": "7.0.0",
+    "next-seo": "4.26.0",
     "nodemon": "2.0.8",
     "prettier": "2.3.2",
     "shx": "0.3.3",

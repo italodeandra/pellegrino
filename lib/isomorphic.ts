@@ -1,12 +1,73 @@
-import { Model } from "mongoose";
+import {
+  Model,
+  Schema,
+  model as createModel,
+  SchemaDefinition,
+  Document,
+  models,
+  SchemaOptions,
+} from "mongoose";
 import { isServer } from "@italodeandra/pijama/utils/isBrowser";
+import setupSchemaHooks from "./setupSchemaHooks";
+import { ModelPermissions } from "./checkPermissions";
 
-export function isomorphic<TModel extends Model<any>>(
+export function isomorphic<
+  TDocument extends Document,
+  TDefinition extends SchemaDefinition<TDocument> = SchemaDefinition<TDocument>,
+  TModel extends Model<TDocument> = Model<TDocument>
+>(name: string, schema: TDefinition, permissions?: ModelPermissions): TModel;
+export function isomorphic<
+  TDocument extends Document,
+  TDefinition extends SchemaDefinition<TDocument> = SchemaDefinition<TDocument>,
+  TModel extends Model<TDocument> = Model<TDocument>
+>(name: string, model: () => TModel, permissions?: ModelPermissions): TModel;
+export function isomorphic<
+  TDocument extends Document,
+  TDefinition extends SchemaDefinition<TDocument> = SchemaDefinition<TDocument>,
+  TModel extends Model<TDocument> = Model<TDocument>
+>(
   name: string,
-  model: () => TModel
-): TModel {
+  schema: TDefinition,
+  schemaOptions?: SchemaOptions,
+  permissions?: ModelPermissions
+): TModel;
+export function isomorphic(
+  name: any,
+  schemaOrModel: any,
+  permissionsOrOptions?: any,
+  permissions?: any
+): any {
+  if (!permissions) {
+    permissions = permissionsOrOptions;
+    permissionsOrOptions = undefined;
+  }
+  const getModel = () => {
+    let model: any;
+
+    if (typeof schemaOrModel === "function") {
+      model = schemaOrModel();
+    } else if (models[name]) {
+      model = models[name];
+    } else {
+      const schema = new Schema(schemaOrModel, permissionsOrOptions);
+      setupSchemaHooks(name, schema);
+      model = createModel(name, schema);
+    }
+
+    model._pellegrino_permissions = {
+      access: {
+        [name]: permissions.access,
+      },
+      presets: {
+        [name]: permissions.presets,
+      },
+    };
+
+    return model;
+  };
+
   return isServer
-    ? model()
+    ? getModel()
     : (new Proxy(
         {},
         {

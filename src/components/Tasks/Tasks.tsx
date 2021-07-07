@@ -13,12 +13,9 @@ const Tasks = () => {
   const { search } = useSnapshot(state);
 
   const { data: tasks, isLoading } = useSubscription(() =>
-    TaskModel.find(
-      {
-        description: { $options: "i", $regex: search },
-      },
-      "description done"
-    )
+    TaskModel.find({
+      description: { $options: "i", $regex: search },
+    })
   );
 
   return (
