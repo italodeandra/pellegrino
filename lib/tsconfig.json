@@ -6,7 +6,7 @@
     "emitDeclarationOnly": false,
     "outDir": "../dist",
     "jsx": "react-jsx",
-    "module": "esnext",
+    "module": "commonjs",
     "jsxImportSource": "@emotion/react"
   },
   "include": [
