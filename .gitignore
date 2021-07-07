@@ -2,7 +2,10 @@
 
 # dependencies
 /node_modules
-.pnpm-debug.log
+/.pnp
+.pnp.js
+.yalc
+yalc.lock
 
 # testing
 /coverage
@@ -12,13 +15,12 @@
 /out/
 
 # production
-/storybook-static
+/build
 /dist
 
 # misc
 .DS_Store
 *.pem
-.eslintcache
 
 # debug
 npm-debug.log*
@@ -34,7 +36,5 @@ yarn-error.log*
 # vercel
 .vercel
 
-# ide
+# idea
 .idea
-.vscode
-.history

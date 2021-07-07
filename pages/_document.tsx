@@ -1,6 +1,6 @@
-import Document, { Head, Html, Main, NextScript } from "next/document"
-import { getInitialProps } from "@italodeandra/pijama/next"
-import { theme } from "../theme"
+import Document, { Head, Html, Main, NextScript } from "next/document";
+import { getInitialProps } from "@italodeandra/pijama/next/_document";
+import { theme } from "../src/theme";
 
 // noinspection JSUnusedGlobalSymbols
 export default class MyDocument extends Document {
@@ -16,8 +16,8 @@ export default class MyDocument extends Document {
           <NextScript />
         </body>
       </Html>
-    )
+    );
   }
 }
 
-MyDocument.getInitialProps = getInitialProps
+MyDocument.getInitialProps = getInitialProps;

@@ -1,16 +1,17 @@
-import "@fontsource/inter/variable-full.css"
-import { CssBaseline, ThemeProvider } from "@italodeandra/pijama"
-import { QueryClient, QueryClientProvider } from "react-query"
-import type { AppProps } from "next/app"
-import { DefaultSeo } from "@italodeandra/pijama/next-seo"
-import Head from "next/head"
-import { Hydrate } from "react-query/hydration"
-import { theme } from "../theme"
-import { useState } from "react"
-import { withEmotionCache } from "@italodeandra/pijama/next"
+import "@fontsource/inter/variable-full.css";
+import { QueryClient, QueryClientProvider } from "react-query";
+import type { AppProps } from "next/app";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { DefaultSeo } from "next-seo";
+import Head from "next/head";
+import { Hydrate } from "react-query/hydration";
+import { theme } from "../src/theme";
+import { ThemeProvider } from "@material-ui/core/styles";
+import { useState } from "react";
+import withEmotionCache from "@italodeandra/pijama/next/withEmotionCache";
 
 const MyApp = withEmotionCache(({ Component, pageProps }: AppProps) => {
-  const [queryClient] = useState(() => new QueryClient())
+  const [queryClient] = useState(() => new QueryClient());
 
   // noinspection HtmlRequiredTitleElement
   return (
@@ -33,8 +34,8 @@ const MyApp = withEmotionCache(({ Component, pageProps }: AppProps) => {
         </QueryClientProvider>
       </ThemeProvider>
     </>
-  )
-})
+  );
+});
 
 // noinspection JSUnusedGlobalSymbols
-export default MyApp
+export default MyApp;

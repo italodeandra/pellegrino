@@ -1,54 +1,18 @@
-import { Model, MongooseDocumentMiddleware } from "mongoose"
-import {
-  UseMutationOptions,
-  UseMutationResult,
-  UseQueryResult,
-} from "react-query/types/react/types"
+import { Model } from "mongoose";
+import { NextApiHandler } from "next";
+import connectDb from "./connectDb";
 
-type Await<T> = T extends {
-  then(onfulfilled?: (value: infer U) => unknown): unknown
-}
-  ? U
-  : T
+const Pellegrino =
+  (models: { [key: string]: Model<any> }): NextApiHandler =>
+  async (req, res) => {
+    await connectDb();
+    const modelName = req.query.model as keyof typeof models;
+    const method = req.query.method as string;
+    const model: any = models[modelName];
+    const args = req.body;
+    const data = await model[method](...args);
+    res.send(data);
+  };
 
-type Parameters<T extends (...args: any) => any> = T extends (
-  ...args: infer P
-) => any
-  ? P
-  : T
-
-export interface Pellegrino<SchemaDefinitionType = any> {
-  aggregate: Model<SchemaDefinitionType>["aggregate"]
-  create: Model<SchemaDefinitionType>["create"]
-  find: Model<SchemaDefinitionType>["find"]
-  hooks: { [key: string]: (hook: MongooseDocumentMiddleware, doc: any) => void }
-  name: string
-  updateMany: Model<SchemaDefinitionType>["update"]
-  updateOne: Model<SchemaDefinitionType>["updateOne"]
-  upsert: Model<SchemaDefinitionType>["findOneAndUpdate"]
-  useMutation: <Method extends keyof Model<SchemaDefinitionType>>(
-    method: Method,
-    options?: UseMutationOptions<
-      Await<ReturnType<Model<SchemaDefinitionType>[Method]>>
-    >
-  ) => Omit<
-    UseMutationResult<Await<ReturnType<Model<SchemaDefinitionType>[Method]>>>,
-    "mutate"
-  > & {
-    mutate: Model<SchemaDefinitionType>[Method]
-  }
-  useQuery: <Method extends keyof Model<SchemaDefinitionType>>(
-    method: Method,
-    ...args: Parameters<Model<SchemaDefinitionType>[Method]>
-  ) => UseQueryResult<Await<ReturnType<Model<SchemaDefinitionType>[Method]>>>
-
-  useSubscription<Method extends keyof Model<SchemaDefinitionType>>(
-    method: "aggregate",
-    pipeline: any[]
-  ): UseQueryResult<Await<ReturnType<Model<SchemaDefinitionType>[Method]>>>
-
-  useSubscription<Method extends keyof Model<SchemaDefinitionType>>(
-    method: Method,
-    ...args: Parameters<Model<SchemaDefinitionType>[Method]>
-  ): UseQueryResult<Await<ReturnType<Model<SchemaDefinitionType>[Method]>>>
-}
+// noinspection JSUnusedGlobalSymbols
+export default Pellegrino;
