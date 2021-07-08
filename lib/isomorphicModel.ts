@@ -54,14 +54,16 @@ export default function isomorphicModel(
       model = createModel(name, schema);
     }
 
-    model._pellegrino_permissions = {
-      access: {
-        [name]: permissions.access,
-      },
-      presets: {
-        [name]: permissions.presets,
-      },
-    };
+    if (permissions) {
+      model._pellegrino_permissions = {
+        access: {
+          [name]: permissions.access,
+        },
+        presets: {
+          [name]: permissions.presets,
+        },
+      };
+    }
 
     return model;
   };
