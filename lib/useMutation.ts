@@ -3,8 +3,12 @@ import axios from "axios";
 import Await from "./Await";
 import { useState, useEffect } from "react";
 import isEqual from "lodash/isEqual";
+import { UseMutationOptions } from "react-query/types/react/types";
 
-export default function useMutation<Query>(query: () => Query) {
+export default function useMutation<Query>(
+  query: () => Query,
+  options?: UseMutationOptions<Await<Query>>
+) {
   const [clientQuery, setClientQuery] = useState<any>();
   useEffect(() => {
     const newQuery = query();
@@ -14,16 +18,23 @@ export default function useMutation<Query>(query: () => Query) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
   const mutation = useMutationRQ<Await<Query>>(
-    [clientQuery?.model, clientQuery?.method, clientQuery?.args],
+    [
+      clientQuery?.route ? clientQuery?.route : clientQuery?.model,
+      clientQuery?.method,
+      clientQuery?.args,
+    ],
     () =>
       clientQuery
         ? axios
             .post(
-              `/api/query?model=${clientQuery.model}&method=${clientQuery.method}`,
+              clientQuery.route
+                ? `/api${clientQuery.route}`
+                : `/api/query?model=${clientQuery.model}&method=${clientQuery.method}`,
               clientQuery.args
             )
             .then((res) => res.data)
-        : new Promise(() => {})
+        : new Promise(() => {}),
+    options
   );
   return {
     ...mutation,

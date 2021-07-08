@@ -4,11 +4,12 @@ import useUpdate from "react-use/lib/useUpdate";
 import socketIOClient, { Socket } from "socket.io-client";
 import useQuery from "./useQuery";
 import isEqual from "lodash/isEqual";
-import { UseQueryResult } from "react-query/types/react/types";
+import { UseQueryResult, UseQueryOptions } from "react-query/types/react/types";
 import Await from "./Await";
 
 export default function useSubscription<Query>(
-  query: () => Query
+  query: () => Query,
+  options?: UseQueryOptions<Await<Query>>
 ): UseQueryResult<Await<Query>> {
   const [clientQuery, setClientQuery] = useState<any>();
   useEffect(() => {
@@ -39,5 +40,5 @@ export default function useSubscription<Query>(
       });
     }
   }, [clientQuery?.model, queryClient]);
-  return useQuery(query as () => Query);
+  return useQuery(query as () => Query, options);
 }
