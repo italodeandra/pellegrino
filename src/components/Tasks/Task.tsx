@@ -1,5 +1,5 @@
 import { VFC } from "react";
-import { ITask, default as TaskModel } from "../../models/Task";
+import { ITask } from "../../models/Task";
 import { useSnapshot } from "valtio";
 import useMutation from "../../../lib/useMutation";
 import state from "../../state";
@@ -10,6 +10,7 @@ import {
   ListItemIcon,
   ListItem,
 } from "@material-ui/core";
+import markTaskAsDone from "../../../pages/api/markTaskAsDone";
 
 const Task: VFC<{
   task: ITask;
@@ -17,14 +18,8 @@ const Task: VFC<{
   const { selectedTask, setTaskDescription, setSelectedTask } =
     useSnapshot(state);
 
-  let { mutate: markTaskAsDone, isLoading: isMarkingAsDone } = useMutation(() =>
-    TaskModel.updateOne(
-      { _id: task._id },
-      {
-        done: !task.done,
-      }
-    )
-  );
+  let { mutate: mutateMarkTaskAsDone, isLoading: isMarkingAsDone } =
+    useMutation(() => markTaskAsDone({ taskId: task._id, done: !task.done }));
 
   return (
     <ListItem
@@ -51,7 +46,7 @@ const Task: VFC<{
           inputProps={{ "aria-labelledby": task._id }}
           onClick={(e) => {
             e.stopPropagation();
-            markTaskAsDone();
+            mutateMarkTaskAsDone();
           }}
           tabIndex={-1}
         />

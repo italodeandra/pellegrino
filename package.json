@@ -84,6 +84,7 @@
     "npm": "7.18.1"
   },
   "browser": {
-    "mongoose": false
+    "mongoose": false,
+    "mongodb-memory-server": false
   }
 }
