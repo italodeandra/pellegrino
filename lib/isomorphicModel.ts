@@ -11,17 +11,17 @@ import { isServer } from "@italodeandra/pijama/utils/isBrowser";
 import setupSchemaHooks from "./setupSchemaHooks";
 import { ModelPermissions } from "./checkPermissions";
 
-export function isomorphic<
+export default function isomorphicModel<
   TDocument extends Document,
   TDefinition extends SchemaDefinition<TDocument> = SchemaDefinition<TDocument>,
   TModel extends Model<TDocument> = Model<TDocument>
 >(name: string, schema: TDefinition, permissions?: ModelPermissions): TModel;
-export function isomorphic<
+export default function isomorphicModel<
   TDocument extends Document,
   TDefinition extends SchemaDefinition<TDocument> = SchemaDefinition<TDocument>,
   TModel extends Model<TDocument> = Model<TDocument>
 >(name: string, model: () => TModel, permissions?: ModelPermissions): TModel;
-export function isomorphic<
+export default function isomorphicModel<
   TDocument extends Document,
   TDefinition extends SchemaDefinition<TDocument> = SchemaDefinition<TDocument>,
   TModel extends Model<TDocument> = Model<TDocument>
@@ -31,7 +31,7 @@ export function isomorphic<
   schemaOptions?: SchemaOptions,
   permissions?: ModelPermissions
 ): TModel;
-export function isomorphic(
+export default function isomorphicModel(
   name: any,
   schemaOrModel: any,
   permissionsOrOptions?: any,

@@ -1,12 +1,12 @@
 import { Document } from "mongoose";
-import { isomorphic } from "../../lib/isomorphic";
+import isomorphicModel from "../../lib/isomorphicModel";
 
 export interface ITask extends Document {
   description: string;
   done?: boolean;
 }
 
-const Task = isomorphic<ITask>(
+const Task = isomorphicModel<ITask>(
   "Task",
   {
     description: { required: true, type: String },
