@@ -45,6 +45,8 @@ const Pellegrino =
           ? user?.id || "none"
           : value === USER_ROLE
           ? user?.role || "anonymous"
+          : typeof value === "symbol"
+          ? user?.[value as any]
           : value
       );
 
