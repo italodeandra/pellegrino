@@ -11,6 +11,28 @@ import { isServer } from "@italodeandra/pijama/utils/isBrowser";
 import setupSchemaHooks from "./setupSchemaHooks";
 import { ModelPermissions } from "./checkPermissions";
 
+export function clientModel<
+  TDocument extends Document,
+  TDefinition extends SchemaDefinition<TDocument> = SchemaDefinition<TDocument>,
+  TModel extends Model<TDocument> = Model<TDocument>
+>(name: string): TModel {
+  return new Proxy(
+    {},
+    {
+      get: function (target, prop) {
+        return (...args: any) => {
+          const method = prop;
+          return {
+            model: name,
+            method,
+            args,
+          };
+        };
+      },
+    }
+  ) as any;
+}
+
 export default function isomorphicModel<
   TDocument extends Document,
   TDefinition extends SchemaDefinition<TDocument> = SchemaDefinition<TDocument>,
@@ -20,7 +42,7 @@ export default function isomorphicModel<
   TDocument extends Document,
   TDefinition extends SchemaDefinition<TDocument> = SchemaDefinition<TDocument>,
   TModel extends Model<TDocument> = Model<TDocument>
->(name: string, model: () => TModel, permissions?: ModelPermissions): TModel;
+>(name: string, schema: () => TModel, permissions?: ModelPermissions): TModel;
 export default function isomorphicModel<
   TDocument extends Document,
   TDefinition extends SchemaDefinition<TDocument> = SchemaDefinition<TDocument>,
@@ -41,7 +63,7 @@ export default function isomorphicModel(
     permissions = permissionsOrOptions;
     permissionsOrOptions = undefined;
   }
-  const getModel = () => {
+  const serverModel = () => {
     let model: any;
 
     if (typeof schemaOrModel === "function") {
@@ -68,21 +90,5 @@ export default function isomorphicModel(
     return model;
   };
 
-  return isServer
-    ? getModel()
-    : (new Proxy(
-        {},
-        {
-          get: function (target, prop) {
-            return (...args: any) => {
-              const method = prop;
-              return {
-                model: name,
-                method,
-                args,
-              };
-            };
-          },
-        }
-      ) as any);
+  return isServer ? serverModel() : clientModel(name);
 }
