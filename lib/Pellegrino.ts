@@ -52,7 +52,7 @@ const Pellegrino =
 
       await connectDb();
 
-      const data = await model[method](...args);
+      const data = await model[method](...(args || []));
       res.send(data);
     } else {
       unauthorized(res);
