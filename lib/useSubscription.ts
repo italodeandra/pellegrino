@@ -6,10 +6,11 @@ import useQuery from "./useQuery";
 import isEqual from "lodash/isEqual";
 import { UseQueryResult, UseQueryOptions } from "react-query/types/react/types";
 import Await from "./Await";
+import { AxiosInstance } from "axios";
 
 export default function useSubscription<Query>(
   query: () => Query,
-  options?: UseQueryOptions<Await<Query>>
+  options?: UseQueryOptions<Await<Query>> & { axios?: AxiosInstance }
 ): UseQueryResult<Await<Query>> {
   const [clientQuery, setClientQuery] = useState<any>();
   useEffect(() => {

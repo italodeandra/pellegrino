@@ -1,13 +1,14 @@
 import { useMutation as useMutationRQ } from "react-query";
-import axios from "axios";
+import axios from "./axios";
 import Await from "./Await";
 import { useState, useEffect } from "react";
 import isEqual from "lodash/isEqual";
 import { UseMutationOptions } from "react-query/types/react/types";
+import { AxiosInstance } from "axios";
 
 export default function useMutation<Query>(
   query: () => Query,
-  options?: UseMutationOptions<Await<Query>>
+  options?: UseMutationOptions<Await<Query>> & { axios?: AxiosInstance }
 ) {
   const [clientQuery, setClientQuery] = useState<any>();
   useEffect(() => {
@@ -25,7 +26,7 @@ export default function useMutation<Query>(
     ],
     () =>
       clientQuery
-        ? axios
+        ? (options?.axios || axios)
             .post(
               clientQuery.route
                 ? `/api${clientQuery.route}`
