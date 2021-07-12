@@ -30,7 +30,7 @@ const Pellegrino =
     const model: any = models[modelName];
     let args = req.body;
     permissions = merge(permissions || {}, model._pellegrino_permissions);
-    const user = permissions?.auth?.(req);
+    const user = await permissions?.auth?.(req);
     const hasPermission = await checkPermissions(
       permissions,
       req,

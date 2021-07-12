@@ -30,10 +30,14 @@ export interface Permissions {
     };
   };
 
-  auth?(req: NextApiRequest): { role: string; [key: string]: any };
+  auth?(
+    req: NextApiRequest
+  ):
+    | Promise<{ role: string; [key: string]: any }>
+    | { role: string; [key: string]: any };
 }
 
-export default function checkPermissions(
+export default async function checkPermissions(
   permissions: Permissions | undefined,
   req: NextApiRequest,
   user: any,
@@ -77,7 +81,7 @@ export default function checkPermissions(
         return true;
       }
 
-      user = user || permissions.auth?.(req);
+      user = user || (await permissions.auth?.(req));
       const role = user?.role || "anonymous";
       // noinspection RedundantIfStatementJS
       if (
