@@ -11,7 +11,7 @@ import { isServer } from "@italodeandra/pijama/utils/isBrowser";
 import setupSchemaHooks from "./setupSchemaHooks";
 import { ModelPermissions } from "./checkPermissions";
 
-export function clientModel<
+export function createClientModel<
   TDocument extends Document,
   TDefinition extends SchemaDefinition<TDocument> = SchemaDefinition<TDocument>,
   TModel extends Model<TDocument> = Model<TDocument>
@@ -63,7 +63,7 @@ export default function isomorphicModel(
     permissions = permissionsOrOptions;
     permissionsOrOptions = undefined;
   }
-  const serverModel = () => {
+  const createServerModel = () => {
     let model: any;
 
     if (typeof schemaOrModel === "function") {
@@ -90,5 +90,13 @@ export default function isomorphicModel(
     return model;
   };
 
-  return isServer ? serverModel() : clientModel(name);
+  const clientModel = createClientModel(name);
+
+  if (isServer) {
+    const serverModel = createServerModel();
+    serverModel.pellegrinoSchema = clientModel;
+    return serverModel;
+  } else {
+    return clientModel;
+  }
 }

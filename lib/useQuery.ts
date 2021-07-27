@@ -19,12 +19,18 @@ export default function useQuery<Query>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
   return useQueryRQ(
-    [clientQuery?.model, clientQuery?.method, clientQuery?.args],
+    [
+      clientQuery?.route ? clientQuery?.route : clientQuery?.model,
+      clientQuery?.method,
+      clientQuery?.args,
+    ],
     () =>
       clientQuery
         ? (options?.axios || axios)
             .post(
-              `/api/query?model=${clientQuery.model}&method=${clientQuery.method}`,
+              clientQuery.route
+                ? `/api${clientQuery.route}`
+                : `/api/query?model=${clientQuery.model}&method=${clientQuery.method}`,
               clientQuery.args
             )
             .then((res) => res.data)
