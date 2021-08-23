@@ -9,6 +9,7 @@ import { theme } from "../src/theme";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { useState } from "react";
 import withEmotionCache from "@italodeandra/pijama/next/withEmotionCache";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 const MyApp = withEmotionCache(({ Component, pageProps }: AppProps) => {
   const [queryClient] = useState(() => new QueryClient());
@@ -29,6 +30,8 @@ const MyApp = withEmotionCache(({ Component, pageProps }: AppProps) => {
 
         <QueryClientProvider client={queryClient}>
           <Hydrate state={pageProps.dehydratedState}>
+            <ReactQueryDevtools />
+
             <Component {...pageProps} />
           </Hydrate>
         </QueryClientProvider>

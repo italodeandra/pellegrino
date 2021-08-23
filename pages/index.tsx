@@ -1,11 +1,30 @@
-import Stack from "@material-ui/core/Stack";
-import TextField from "@italodeandra/pijama/components/TextField";
 import Button from "@italodeandra/pijama/components/Button";
-import Task from "../src/models/Task";
-import useMutation from "../lib/useMutation";
+import TextField from "@italodeandra/pijama/components/TextField";
+import Stack from "@material-ui/core/Stack";
+import { GetServerSideProps } from "next";
+import { QueryClient } from "react-query";
+import { dehydrate } from "react-query/hydration";
 import { useSnapshot } from "valtio";
+import serialize from "../lib/serialize";
 import Tasks from "../src/components/Tasks/Tasks";
+import Task from "../src/models/Task";
 import state from "../src/state";
+import { useCreateTask } from "./api/task/createTask";
+import { prefetchFindTasks } from "./api/task/findTasks";
+import { useUpdateTask } from "./api/task/updateTask";
+
+// noinspection JSUnusedGlobalSymbols
+export const getServerSideProps: GetServerSideProps = async () => {
+  const queryClient = new QueryClient();
+
+  await prefetchFindTasks(queryClient);
+
+  return {
+    props: {
+      dehydratedState: serialize(dehydrate(queryClient)),
+    },
+  };
+};
 
 const Home = () => {
   const {
@@ -16,31 +35,29 @@ const Home = () => {
     taskDescription,
   } = useSnapshot(state);
 
-  const { mutate: createTask, isLoading: isCreating } = useMutation(() =>
-    Task.create({ description: taskDescription })
-  );
+  const { mutate: createTask, isLoading: isCreating } = useCreateTask({
+    onSuccess() {
+      setTaskDescription("");
+    },
+  });
+  const { mutate: updateTask, isLoading: isUpdating } = useUpdateTask();
 
-  const { mutate: updateSelectedTask, isLoading: isUpdating } = useMutation(
-    () =>
-      Task.updateOne(
-        { _id: selectedTask },
-        {
-          description: taskDescription,
-        }
-      )
-  );
+  const handleAddClick = () => createTask({ description: taskDescription });
 
-  const handleAddClick = () => {
-    createTask();
-    setTaskDescription("");
-  };
-
-  const handleUpdateClick = () => {
-    updateSelectedTask();
-  };
+  const handleUpdateClick = () =>
+    updateTask({ _id: selectedTask!, description: taskDescription });
 
   return (
-    <Stack spacing={1} sx={{ maxWidth: 500, mx: "auto", p: 2 }}>
+    <Stack
+      spacing={1}
+      sx={{
+        maxWidth: 500,
+        mx: "auto",
+        p: 2,
+        height: "100vh",
+        justifyContent: "center",
+      }}
+    >
       <TextField
         label={"Search"}
         onChange={({ target: { value } }) => setSearch(value)}

@@ -1,31 +1,14 @@
-import { Document } from "mongoose";
-import isomorphicModel from "../../lib/isomorphicModel";
+import createModel from "../../lib/createModel";
 
-export interface ITask extends Document {
+export interface ITask {
+  _id: string;
   description: string;
   done?: boolean;
 }
 
-const Task = isomorphicModel<ITask>(
-  "Task",
-  {
-    description: { required: true, type: String },
-    done: { default: false, required: true, type: Boolean },
-  },
-  {
-    access: {
-      "*": {
-        find: true,
-        create: true,
-        updateOne: true,
-      },
-    },
-    presets: {
-      "*": {
-        find: [{}, "description done"],
-      },
-    },
-  }
-);
+const Task = createModel<ITask>("Task", {
+  description: { required: true, type: String },
+  done: { default: false, required: true, type: Boolean },
+});
 
 export default Task;

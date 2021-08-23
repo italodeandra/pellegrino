@@ -3,12 +3,12 @@ import { ITask } from "./models/Task";
 
 const state = proxy({
   search: "",
-  selectedTask: null as ITask["id"] | null,
+  selectedTask: null as ITask["_id"] | null,
   taskDescription: "",
   setSearch(search: string) {
     state.search = search;
   },
-  setSelectedTask(task: ITask | null) {
+  setSelectedTask(task: ITask["_id"] | null) {
     state.selectedTask = task;
   },
   setTaskDescription(description: string) {

@@ -1,36 +1,29 @@
+import numericArray from "@italodeandra/pijama/utils/numericArray";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import Skeleton from "@material-ui/core/Skeleton";
-import { default as TaskModel } from "../../models/Task";
 import { useSnapshot } from "valtio";
+import { useFindTasks } from "../../../pages/api/task/findTasks";
 import state from "../../state";
-import Task from "./Task";
-import useSubscription from "../../../lib/useSubscription";
+import Task, { SkeletonTask } from "./Task";
 
 const Tasks = () => {
   const { search } = useSnapshot(state);
 
-  const { data: tasks, isLoading } = useSubscription(() =>
-    TaskModel.find({
-      description: { $options: "i", $regex: search },
-    })
-  );
+  const { data: tasks, isLoading } = useFindTasks(search);
 
   return (
     <List>
-      {isLoading && (
-        <ListItem dense>
-          <ListItemIcon>
-            <Skeleton width={18} />
-          </ListItemIcon>
-          <ListItemText primary={<Skeleton />} />
-        </ListItem>
-      )}
+      {isLoading &&
+        !tasks?.length &&
+        numericArray(3).map((i) => <SkeletonTask key={i} />)}
       {!isLoading && !tasks?.length && (
         <ListItem dense>
-          <ListItemText secondary={"No tasks"} />
+          <ListItemText
+            secondary={
+              !search ? "No tasks yet" : `No tasks like "${search}" found`
+            }
+          />
         </ListItem>
       )}
       {tasks?.map((task) => (

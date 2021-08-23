@@ -1,6 +1,6 @@
 import { createServer } from "http";
 import next from "next";
-import setupSocketServer from "../lib/setupSocketServer";
+import { setupSocketServer } from "../lib/socket";
 
 const dev = process.env.NODE_ENV !== "production";
 const port = process.env.PORT || 3000;
