@@ -1,1 +1,1 @@
-module.exports = require("@italodeandra/pijama/.lintstagedrc");
+module.exports = { ...require("@italodeandra/pijama/.lintstagedrc") };

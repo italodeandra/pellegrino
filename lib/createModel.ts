@@ -1,13 +1,4 @@
 import { isBrowser } from "@italodeandra/pijama/utils/isBrowser";
-import {
-  DocumentDefinition,
-  Model,
-  model,
-  models,
-  Schema,
-  SchemaDefinition,
-  SchemaOptions,
-} from "mongoose";
 
 export default function createModel<SchemaDefinitionType>(
   name: string,

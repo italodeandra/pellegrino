@@ -2,7 +2,7 @@ import { internalServerError } from "@italodeandra/pijama/server/apiErrors";
 import { NextApiHandler } from "next";
 import { useEffect } from "react";
 import { QueryClient, useQuery, useQueryClient } from "react-query";
-import connectDb from "../../../lib/connectDb";
+import connectDb from "../../../lib/connectToDatabase";
 import socket from "../../../lib/socket";
 import axios from "../../../src/axios";
 import Task, { ITask } from "../../../src/models/Task";

@@ -1,73 +1,24 @@
 {
   "name": "@italodeandra/pellegrino",
   "version": "1.4.0",
-  "description": "Isomorphic Mongoose for Next.js",
+  "description": "Basic application - To do list",
   "private": true,
-  "main": "index.js",
-  "typings": "index.d.ts",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
     "prepare": "husky install",
-    "build:lib": "shx rm -rf dist && tsc --build lib/tsconfig.json && shx cp package.json readme.md dist",
-    "pre-publish": "npm run build:lib && cd dist && json -I -f package.json -e \"this.private=false; this.devDependencies=undefined; this.scripts=undefined;\"",
-    "publish:github": "npm run pre-publish && cd dist && npm publish",
-    "publish:yalc": "npm run pre-publish && cd dist && yalc publish --private",
-    "dev": "nodemon",
+    "dev": "next dev",
     "build": "next build && tsc --project tsconfig.server.json",
     "build:analyze": "cross-env ANALYZE=true npm run build",
-    "start": "cross-env NODE_ENV=production node dist/server/index.js",
-    "test": "echo \"not implemented\"",
-    "lint": "next lint",
+    "start": "next start",
+    "test": "jest",
     "coverage": "jest --coverage",
     "pre-commit": "lint-staged",
     "pre-push": "npm test"
   },
   "dependencies": {
-    "@next/bundle-analyzer": "11.0.1",
-    "cross-env": "7.0.3",
-    "mongodb": "3.6.9",
-    "mongoose": "^5.13.2",
-    "next": "11.0.1",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "react-query": "3.18.1"
-  },
-  "devDependencies": {
-    "@italodeandra/pijama": "file:.yalc/@italodeandra/pijama",
-    "@types/jest": "26.0.24",
-    "@types/lodash": "4.14.170",
-    "@types/react": "17.0.13",
-    "axios": "0.21.1",
-    "eslint": "7.29.0",
-    "eslint-config-next": "11.0.1",
-    "husky": "6.0.0",
-    "jest": "27.0.6",
-    "jest-circus": "27.0.6",
-    "json": "11.0.0",
-    "lint-staged": "11.0.0",
-    "mongodb-memory-server": "7.0.0",
-    "next-seo": "4.26.0",
-    "nodemon": "2.0.8",
-    "prettier": "2.3.2",
-    "shx": "0.3.3",
-    "socket.io": "4.1.2",
-    "socket.io-client": "4.1.2",
-    "ts-node": "10.0.0",
-    "typescript": "4.3.5",
-    "valtio": "1.2.0"
-  },
-  "peerDependencies": {
-    "axios": "^0.21.1",
-    "cross-env": "^7.0.3",
-    "mongodb-memory-server": "^7.0.0",
-    "mongoose": "^5.13.2",
-    "next": "^11.0.1",
-    "next-auth": "^3.27.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-query": "^3.18.1"
+    "@italodeandra/pijama": "file:.yalc/@italodeandra/pijama"
   },
   "author": {
     "name": "Ítalo Andrade",
@@ -79,8 +30,6 @@
     "npm": "7.18.1"
   },
   "browser": {
-    "mongoose": false,
-    "mongodb-memory-server": false,
-    "socket.io": false
+    "mongodb-memory-server": false
   }
 }

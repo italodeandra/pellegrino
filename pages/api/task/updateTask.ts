@@ -6,7 +6,7 @@ import {
 import { NextApiHandler } from "next";
 import { useMutation, useQueryClient } from "react-query";
 import { UseMutationOptions } from "react-query/types/react/types";
-import connectDb from "../../../lib/connectDb";
+import connectDb from "../../../lib/connectToDatabase";
 import socket from "../../../lib/socket";
 import axios from "../../../src/axios";
 import Task, { ITask } from "../../../src/models/Task";

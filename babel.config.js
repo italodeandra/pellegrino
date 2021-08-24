@@ -1,1 +1,1 @@
-module.exports = require("@italodeandra/pijama/babel.config");
+module.exports = { ...require("@italodeandra/pijama/babel.config") };

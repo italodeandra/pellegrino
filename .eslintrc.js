@@ -1,1 +1,1 @@
-module.exports = require("@italodeandra/pijama/.eslintrc");
+module.exports = { ...require("@italodeandra/pijama/.eslintrc") };
