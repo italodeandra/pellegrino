@@ -1,34 +1,24 @@
-export interface ITask extends Document {
-  description: string;
-  done?: boolean;
-}
+import { ObjectId } from "mongodb";
+import { createRepository } from "../../../lib/createRepository";
+import ITask from "./Task.interface";
 
-function createRepository<TSchema, TMethods extends {} = {}>(
-  collectionName: string,
-  methods: TMethods
-): TMethods & { db: Collection<TSchema> } {
-  return null as any;
-}
-
-export function findTasks() {}
-
-const Task = createRepository<ITask>("task", {
+const TaskRepository = createRepository<ITask>("task", {
   async find(): Promise<ITask[]> {
-    const { db } = Task;
+    const { db } = TaskRepository;
     const result = await db.find();
     return result.toArray();
   },
   async insert(doc: Pick<ITask, "description">): Promise<ObjectId> {
-    const { db } = Task;
+    const { db } = TaskRepository;
     const result = await db.insertOne(doc);
     return result.insertedId;
   },
   async updateDescriptionById(id: string, description: string): Promise<void> {
-    const { db } = Task;
+    const { db } = TaskRepository;
     await db.findOneAndUpdate({ _id: id }, { description });
   },
   async toggleDoneById(id: string): Promise<void> {
-    const { db } = Task;
+    const { db } = TaskRepository;
     const query = { _id: id };
     const doc = await db.findOne(query);
     if (!doc) {
@@ -38,4 +28,4 @@ const Task = createRepository<ITask>("task", {
   },
 });
 
-export default Task;
+export default TaskRepository;
