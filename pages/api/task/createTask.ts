@@ -8,7 +8,8 @@ import { UseMutationOptions } from "react-query/types/react/types";
 import connectDb from "../../../lib/connectToDatabase";
 import socket from "../../../lib/socket";
 import axios from "../../../src/axios";
-import Task, { ITask } from "../../../src/models/Task";
+import ITask from "../../../src/collections/task/Task.interface";
+import TaskRepository from "../../../src/collections/task/Task.repository";
 import { invalidadeTasksQueriesEvent } from "./findTasks";
 
 export type CreateTaskArgs = Pick<ITask, "description">;
@@ -25,7 +26,7 @@ const handler: NextApiHandler<CreateTaskResponse> = async (req, res) => {
       return badRequest(res);
     }
 
-    const task = await Task.create({
+    const task = await TaskRepository.insert({
       description,
     });
 

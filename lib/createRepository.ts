@@ -1,8 +1,8 @@
 import { Collection } from "mongodb";
 
-export function createRepository<TSchema, TMethods extends {} = {}>(
+export function createRepository<TSchema, TMethods = unknown>(
   collectionName: string,
   methods: TMethods
-): TMethods & { db: Collection<TSchema> } {
+): TMethods {
   return null as any;
 }
