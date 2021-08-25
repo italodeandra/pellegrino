@@ -18,7 +18,7 @@
     "pre-push": "npm test"
   },
   "dependencies": {
-    "@italodeandra/pijama": "file:.yalc/@italodeandra/pijama"
+    "@italodeandra/pijama": "2.0.0"
   },
   "author": {
     "name": "Ítalo Andrade",
