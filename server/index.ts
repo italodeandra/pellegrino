@@ -1,6 +1,7 @@
+import { setupSocketServer } from "@italodeandra/pijama/next/socket";
 import { createServer } from "http";
 import next from "next";
-import { setupSocketServer } from "../lib/socket";
+import { setupTasksCollection } from "../src/collections/task/Task.repository";
 
 const dev = process.env.NODE_ENV !== "production";
 const port = process.env.PORT || 3000;
@@ -11,6 +12,7 @@ app.prepare().then(() => {
   const server = createServer(handle);
 
   setupSocketServer(server);
+  setupTasksCollection();
 
   server.listen(port, () => {
     console.info(`> Ready on http://localhost:${port}`);

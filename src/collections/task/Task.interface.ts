@@ -1,6 +1,7 @@
-import { Document } from "mongodb";
+import { ObjectId } from "mongodb";
 
-export default interface ITask extends Document {
+export default interface ITask {
+  _id: ObjectId;
   description: string;
   done?: boolean;
 }

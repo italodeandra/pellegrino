@@ -1,7 +1,3 @@
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-  enabled: process.env.ANALYZE === "true",
-});
-
-module.exports = withBundleAnalyzer({
+module.exports = {
   ...require("@italodeandra/pijama/next.config"),
-});
+};

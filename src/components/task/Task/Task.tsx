@@ -11,10 +11,10 @@ import {
 import Skeleton from "@material-ui/core/Skeleton";
 import { MouseEventHandler, VFC } from "react";
 import { useSnapshot } from "valtio";
-import { useDeleteTask } from "../../../pages/api/task/deleteTask";
-import { useMarkTaskAsDone } from "../../../pages/api/task/markTaskAsDone";
-import { ITask } from "../../models/Task";
-import state from "../../state";
+import { useDeleteTask } from "../../../../pages/api/task/deleteTask";
+import { useUpdateTask } from "../../../../pages/api/task/updateTask";
+import ITask from "../../../collections/task/Task.interface";
+import state from "../../../state";
 
 const Task: VFC<{
   task: ITask;
@@ -22,8 +22,7 @@ const Task: VFC<{
   const { selectedTask, setTaskDescription, setSelectedTask } =
     useSnapshot(state);
 
-  const { mutate: markTaskAsDone, isLoading: isMarkingAsDone } =
-    useMarkTaskAsDone();
+  const { mutate: updateTask, isLoading: isUpdating } = useUpdateTask();
   const { mutate: deleteTask, isLoading: isDeleting } = useDeleteTask({
     onSuccess() {
       if (task._id === selectedTask) {
@@ -45,7 +44,7 @@ const Task: VFC<{
 
   const handleCheck: MouseEventHandler = (e) => {
     e.stopPropagation();
-    markTaskAsDone({ _id: task._id, done: !task.done });
+    updateTask({ ...task, done: !task.done });
   };
 
   const handleDeleteClick: MouseEventHandler = (e) => {
@@ -73,16 +72,16 @@ const Task: VFC<{
     >
       <ListItemIcon>
         <Checkbox
-          icon={isMarkingAsDone ? <CircularProgress size={24} /> : undefined}
-          checked={task.done}
+          icon={isUpdating ? <CircularProgress size={24} /> : undefined}
+          checked={!!task.done}
           disableRipple
           edge="start"
-          inputProps={{ "aria-labelledby": task._id }}
+          inputProps={{ "aria-labelledby": task._id.toString() }}
           onClick={handleCheck}
           tabIndex={-1}
         />
       </ListItemIcon>
-      <ListItemText id={task._id} primary={task.description} />
+      <ListItemText id={task._id.toString()} primary={task.description} />
     </ListItem>
   );
 };

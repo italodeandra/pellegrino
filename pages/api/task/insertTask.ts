@@ -5,11 +5,10 @@ import {
 import { NextApiHandler } from "next";
 import { useMutation, useQueryClient } from "react-query";
 import { UseMutationOptions } from "react-query/types/react/types";
-import connectDb from "../../../lib/connectToDatabase";
-import socket from "../../../lib/socket";
+import socket from "@italodeandra/pijama/next/socket";
 import axios from "../../../src/axios";
 import ITask from "../../../src/collections/task/Task.interface";
-import TaskRepository from "../../../src/collections/task/Task.repository";
+import { insertTask } from "../../../src/collections/task/Task.repository";
 import { invalidadeTasksQueriesEvent } from "./findTasks";
 
 export type CreateTaskArgs = Pick<ITask, "description">;
@@ -18,21 +17,19 @@ export type CreateTaskResponse = ITask["_id"];
 
 const handler: NextApiHandler<CreateTaskResponse> = async (req, res) => {
   try {
-    await connectDb();
-
     const { description }: CreateTaskArgs = req.body;
 
     if (!description) {
       return badRequest(res);
     }
 
-    const task = await TaskRepository.insert({
+    const taskId = await insertTask({
       description,
     });
 
     socket.emit(invalidadeTasksQueriesEvent);
 
-    res.json(task._id);
+    res.json(taskId);
   } catch (e) {
     console.error(e);
     internalServerError(res);
@@ -42,9 +39,9 @@ const handler: NextApiHandler<CreateTaskResponse> = async (req, res) => {
 // noinspection JSUnusedGlobalSymbols
 export default handler;
 
-const mutationKey = "createTask";
+const mutationKey = "insertTask";
 
-export const useCreateTask = <
+export const useInsertTask = <
   TData = CreateTaskResponse,
   TError = unknown,
   TVariables = CreateTaskArgs,

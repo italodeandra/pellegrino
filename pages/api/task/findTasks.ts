@@ -2,10 +2,10 @@ import { internalServerError } from "@italodeandra/pijama/server/apiErrors";
 import { NextApiHandler } from "next";
 import { useEffect } from "react";
 import { QueryClient, useQuery, useQueryClient } from "react-query";
-import connectDb from "../../../lib/connectToDatabase";
-import socket from "../../../lib/socket";
+import socket from "@italodeandra/pijama/next/socket";
 import axios from "../../../src/axios";
-import Task, { ITask } from "../../../src/models/Task";
+import ITask from "../../../src/collections/task/Task.interface";
+import { findTasks } from "../../../src/collections/task/Task.repository";
 
 export type FindTasksArgs = {
   search?: string;
@@ -13,18 +13,11 @@ export type FindTasksArgs = {
 
 export type FindTasksResponse = ITask[];
 
-export const findTasks = async ({ search = "" }: FindTasksArgs) =>
-  await Task.find({
-    description: { $options: "i", $regex: search },
-  }).lean();
-
 const handler: NextApiHandler<FindTasksResponse> = async (req, res) => {
   try {
-    await connectDb();
-
     const { search }: FindTasksArgs = req.query;
 
-    const tasks = await findTasks({ search });
+    const tasks = await findTasks(search);
 
     res.json(tasks);
   } catch (e) {
@@ -33,12 +26,13 @@ const handler: NextApiHandler<FindTasksResponse> = async (req, res) => {
   }
 };
 
+// noinspection JSUnusedGlobalSymbols
 export default handler;
 
 const queryKey = "findTasks";
 
 export const prefetchFindTasks = (queryClient: QueryClient) =>
-  queryClient.prefetchQuery(["tasks", queryKey, ""], () => findTasks({}));
+  queryClient.prefetchQuery(["tasks", queryKey, ""], () => findTasks());
 
 export const invalidadeTasksQueriesEvent = "invalidateQueries/tasks";
 

@@ -3,9 +3,9 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { useSnapshot } from "valtio";
-import { useFindTasks } from "../../../pages/api/task/findTasks";
-import state from "../../state";
-import Task, { SkeletonTask } from "./Task";
+import { useFindTasks } from "../../../../pages/api/task/findTasks";
+import state from "../../../state";
+import Task, { SkeletonTask } from "../Task/Task";
 
 const Tasks = () => {
   const { search } = useSnapshot(state);
@@ -27,7 +27,7 @@ const Tasks = () => {
         </ListItem>
       )}
       {tasks?.map((task) => (
-        <Task key={task._id} task={task} />
+        <Task key={task._id.toString()} task={task} />
       ))}
     </List>
   );

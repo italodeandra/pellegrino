@@ -6,40 +6,33 @@ import {
 import { NextApiHandler } from "next";
 import { useMutation, useQueryClient } from "react-query";
 import { UseMutationOptions } from "react-query/types/react/types";
-import connectDb from "../../../lib/connectToDatabase";
-import socket from "../../../lib/socket";
+import socket from "@italodeandra/pijama/next/socket";
 import axios from "../../../src/axios";
-import Task, { ITask } from "../../../src/models/Task";
+import ITask from "../../../src/collections/task/Task.interface";
+import { updateTask } from "../../../src/collections/task/Task.repository";
 import { invalidadeTasksQueriesEvent } from "./findTasks";
 
-export type UpdateTaskArgs = Pick<ITask, "_id" | "description">;
+export type UpdateTaskArgs = Pick<ITask, "_id"> & Partial<ITask>;
 
 export type UpdateTaskResponse = ITask["_id"];
 
 const handler: NextApiHandler<UpdateTaskResponse> = async (req, res) => {
   try {
-    await connectDb();
+    const { _id, description, done }: UpdateTaskArgs = req.body;
 
-    const { _id, description }: UpdateTaskArgs = req.body;
-
-    if (!_id || !description) {
+    if (!_id) {
       return badRequest(res);
     }
 
-    const task = await Task.findOneAndUpdate(
-      { _id },
-      {
-        description,
-      }
-    );
+    const updatedCount = await updateTask({ _id, description, done });
 
-    if (!task) {
+    if (!updatedCount) {
       return notFound(res);
     }
 
     socket.emit(invalidadeTasksQueriesEvent);
 
-    res.json(task._id);
+    res.json(updatedCount);
   } catch (e) {
     console.error(e);
     internalServerError(res);

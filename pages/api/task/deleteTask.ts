@@ -5,10 +5,10 @@ import {
 import { NextApiHandler } from "next";
 import { useMutation, useQueryClient } from "react-query";
 import { UseMutationOptions } from "react-query/types/react/types";
-import connectDb from "../../../lib/connectToDatabase";
-import socket from "../../../lib/socket";
+import socket from "@italodeandra/pijama/next/socket";
 import axios from "../../../src/axios";
-import Task, { ITask } from "../../../src/models/Task";
+import ITask from "../../../src/collections/task/Task.interface";
+import { deleteTask } from "../../../src/collections/task/Task.repository";
 import { invalidadeTasksQueriesEvent } from "./findTasks";
 
 export type DeleteTaskArgs = Pick<ITask, "_id">;
@@ -17,15 +17,13 @@ export type DeleteTaskResponse = void;
 
 const handler: NextApiHandler<DeleteTaskResponse> = async (req, res) => {
   try {
-    await connectDb();
-
     const { _id }: DeleteTaskArgs = req.body;
 
     if (!_id) {
       return badRequest(res);
     }
 
-    await Task.deleteOne({ _id });
+    await deleteTask(_id);
 
     socket.emit(invalidadeTasksQueriesEvent);
 
