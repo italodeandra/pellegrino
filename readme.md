@@ -6,4 +6,4 @@ Majapi's base project for new projects and experimenting future changes.
 
 This is a **To do list** by the way.
 
-Available at [pellegrino.majapi.com.br](https://pellegrino.majapi.com.br).
+Available at [pellegrino.majapi.com](https://pellegrino.majapi.com).
