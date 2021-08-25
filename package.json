@@ -12,7 +12,7 @@
     "build": "next build && tsc --project tsconfig.server.json",
     "build:analyze": "cross-env ANALYZE=true npm run build",
     "start": "cross-env NODE_ENV=production node dist/server/index.js",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "coverage": "jest --coverage",
     "pre-commit": "lint-staged",
     "pre-push": "npm test"
