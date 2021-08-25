@@ -1,2 +1,9 @@
-<code>npm i @italodeandra/pellegrino</code> to create isomorphic mongoose models and connect to a mongo memory server if
-URI is not present.
+<img src="hero.png" alt="Majapi">
+<br />
+<br />
+
+Majapi's base project for new projects and experimenting future changes.
+
+This is a **To do list** by the way.
+
+Available at [pellegrino.majapi.com.br](https://pellegrino.majapi.com.br).
