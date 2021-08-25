@@ -4,7 +4,7 @@ import { Toolbar, Typography } from "@material-ui/core";
 import { GetServerSideProps } from "next";
 import { QueryClient } from "react-query";
 import { dehydrate } from "react-query/hydration";
-import AppBar from "../.yalc/@italodeandra/pijama/components/AppBar";
+import AppBar from "@italodeandra/pijama/components/AppBar";
 import TaskView from "../src/components/task/TaskView";
 import { prefetchFindTasks } from "./api/task/findTasks";
 
