@@ -1,5 +1,5 @@
 import { proxy } from "valtio";
-import { ITask } from "./models/Task";
+import ITask from "./collections/task/Task.interface";
 
 const state = proxy({
   search: "",
