@@ -1,13 +1,13 @@
-import { Filter, ObjectId } from "mongodb";
 import { createRepository } from "@italodeandra/pijama/next/createRepository";
+import { Filter, ObjectId } from "mongodb";
 import ITask from "./Task.interface";
 
 const TaskRepository = createRepository<ITask>("task");
 
 const db = TaskRepository;
 
-export function setupTasksCollection() {
-  db.createIndex({ description: "text" });
+export async function setupTasksCollection() {
+  await db.createIndex({ description: "text" });
 }
 
 export async function findTasks(searchTerm?: string): Promise<ITask[]> {
@@ -23,7 +23,12 @@ export async function findTasks(searchTerm?: string): Promise<ITask[]> {
         description: { $options: "i", $regex: searchTerm },
       }
     : {};
-  let cursor = await db.find(filter1);
+  let cursor = await db.find(filter1, {
+    sort: { score: { $meta: "textScore" } },
+    projection: {
+      score: { $meta: "textScore" },
+    },
+  });
   if (await cursor.count()) {
   } else {
     cursor = await db.find(filter2);

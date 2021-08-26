@@ -8,11 +8,11 @@ const port = process.env.PORT || 3000;
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-app.prepare().then(() => {
+app.prepare().then(async () => {
   const server = createServer(handle);
 
   setupSocketServer(server);
-  setupTasksCollection();
+  await setupTasksCollection();
 
   server.listen(port, () => {
     console.info(`> Ready on http://localhost:${port}`);
