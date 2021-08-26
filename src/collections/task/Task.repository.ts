@@ -6,7 +6,7 @@ const TaskRepository = createRepository<ITask>("task");
 
 const db = TaskRepository;
 
-export async function setupTasksCollection() {
+export async function setupTaskCollection() {
   await db.createIndex({ description: "text" });
 }
 
