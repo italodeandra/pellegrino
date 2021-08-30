@@ -1,3 +1,4 @@
+import socket from "@italodeandra/pijama/next/socket";
 import {
   badRequest,
   internalServerError,
@@ -6,7 +7,6 @@ import {
 import { NextApiHandler } from "next";
 import { useMutation, useQueryClient } from "react-query";
 import { UseMutationOptions } from "react-query/types/react/types";
-import socket from "@italodeandra/pijama/next/socket";
 import axios from "../../../src/axios";
 import ITask from "../../../src/collections/task/Task.interface";
 import { updateTask } from "../../../src/collections/task/Task.repository";
@@ -14,7 +14,7 @@ import { invalidadeTasksQueriesEvent } from "./findTasks";
 
 export type UpdateTaskArgs = Pick<ITask, "_id"> & Partial<ITask>;
 
-export type UpdateTaskResponse = ITask["_id"];
+export type UpdateTaskResponse = number;
 
 const handler: NextApiHandler<UpdateTaskResponse> = async (req, res) => {
   try {
