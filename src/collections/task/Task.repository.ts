@@ -2,13 +2,13 @@ import { createRepository } from "@italodeandra/pijama/next/createRepository";
 import { Filter, ObjectId } from "mongodb";
 import ITask from "./Task.interface";
 
-const TaskRepository = createRepository<ITask>("task");
+const TaskRepository = createRepository<ITask>("task", async () => {
+  await db.createIndex({ description: "text" });
+});
 
 const db = TaskRepository;
 
-export async function setupTaskCollection() {
-  await db.createIndex({ description: "text" });
-}
+export async function setupTaskCollection() {}
 
 export async function findTasks(searchTerm?: string): Promise<ITask[]> {
   const filter1: Filter<ITask> = searchTerm
@@ -38,7 +38,7 @@ export async function findTasks(searchTerm?: string): Promise<ITask[]> {
 
 export async function insertTask(
   doc: Pick<ITask, "description">
-): Promise<ObjectId> {
+): Promise<ITask["_id"]> {
   const result = await db.insertOne(doc);
   return result.insertedId;
 }
@@ -46,7 +46,7 @@ export async function insertTask(
 export async function updateTask({
   _id,
   ...doc
-}: Partial<ITask>): Promise<ITask["_id"] | undefined> {
+}: Partial<ITask>): Promise<number> {
   const result = await db.updateOne({ _id: new ObjectId(_id) }, { $set: doc });
   return result.matchedCount;
 }

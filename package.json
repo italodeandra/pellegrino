@@ -18,7 +18,7 @@
     "pre-push": "npm test"
   },
   "dependencies": {
-    "@italodeandra/pijama": "2.0.3"
+    "@italodeandra/pijama": "2.2.0"
   },
   "author": {
     "name": "Ítalo Andrade",
