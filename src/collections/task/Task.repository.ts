@@ -29,8 +29,7 @@ export async function findTasks(searchTerm?: string): Promise<ITask[]> {
       score: { $meta: "textScore" },
     },
   });
-  if (await cursor.count()) {
-  } else {
+  if (!(await cursor.count())) {
     cursor = await db.find(filter2);
   }
   return await cursor.toArray();
