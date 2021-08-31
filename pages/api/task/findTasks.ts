@@ -1,8 +1,8 @@
+import socket from "@italodeandra/pijama/next/socket";
 import { internalServerError } from "@italodeandra/pijama/server/apiErrors";
 import { NextApiHandler } from "next";
 import { useEffect } from "react";
 import { QueryClient, useQuery, useQueryClient } from "react-query";
-import socket from "@italodeandra/pijama/next/socket";
 import axios from "../../../src/axios";
 import ITask from "../../../src/collections/task/Task.interface";
 import { findTasks } from "../../../src/collections/task/Task.repository";
@@ -29,32 +29,31 @@ const handler: NextApiHandler<FindTasksResponse> = async (req, res) => {
 // noinspection JSUnusedGlobalSymbols
 export default handler;
 
-const queryKey = "findTasks";
+const queryKeys = ["task", "findTasks"];
 
 export const prefetchFindTasks = (queryClient: QueryClient) =>
-  queryClient.prefetchQuery(["tasks", queryKey, ""], () => findTasks());
+  queryClient.prefetchQuery([...queryKeys, ""], () => findTasks());
 
-export const invalidadeTasksQueriesEvent = "invalidateQueries/tasks";
+export const invalidadeTaskQueriesEvent = "invalidateQueries/task";
 
-export const useFindTasks = (search?: FindTasksArgs["search"]) => {
+export const useFindTasks = (search: FindTasksArgs["search"] = "") => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
     const handleInvalidadeTasksQueriesEvent = () => {
-      void queryClient.invalidateQueries(["tasks"]);
+      void queryClient.invalidateQueries([queryKeys[0]]);
     };
-    socket.on(invalidadeTasksQueriesEvent, handleInvalidadeTasksQueriesEvent);
+    socket.on(invalidadeTaskQueriesEvent, handleInvalidadeTasksQueriesEvent);
     return () => {
-      socket.off(
-        invalidadeTasksQueriesEvent,
-        handleInvalidadeTasksQueriesEvent
-      );
+      socket.off(invalidadeTaskQueriesEvent, handleInvalidadeTasksQueriesEvent);
     };
   }, [queryClient]);
 
-  return useQuery(["tasks", queryKey, search], () =>
+  return useQuery([...queryKeys, search], () =>
     axios
-      .get<FindTasksResponse>(`/api/task/${queryKey}`, { params: { search } })
+      .get<FindTasksResponse>(`/api/${queryKeys.join("/")}`, {
+        params: { search },
+      })
       .then((res) => res.data)
   );
 };

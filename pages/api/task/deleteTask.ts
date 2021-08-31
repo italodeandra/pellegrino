@@ -1,3 +1,4 @@
+import socket from "@italodeandra/pijama/next/socket";
 import {
   badRequest,
   internalServerError,
@@ -5,11 +6,10 @@ import {
 import { NextApiHandler } from "next";
 import { useMutation, useQueryClient } from "react-query";
 import { UseMutationOptions } from "react-query/types/react/types";
-import socket from "@italodeandra/pijama/next/socket";
 import axios from "../../../src/axios";
 import ITask from "../../../src/collections/task/Task.interface";
 import { deleteTask } from "../../../src/collections/task/Task.repository";
-import { invalidadeTasksQueriesEvent } from "./findTasks";
+import { invalidadeTaskQueriesEvent } from "./findTasks";
 
 export type DeleteTaskArgs = Pick<ITask, "_id">;
 
@@ -25,7 +25,7 @@ const handler: NextApiHandler<DeleteTaskResponse> = async (req, res) => {
 
     await deleteTask(_id);
 
-    socket.emit(invalidadeTasksQueriesEvent);
+    socket.emit(invalidadeTaskQueriesEvent);
 
     res.json();
   } catch (e) {
@@ -37,7 +37,7 @@ const handler: NextApiHandler<DeleteTaskResponse> = async (req, res) => {
 // noinspection JSUnusedGlobalSymbols
 export default handler;
 
-const mutationKey = "deleteTask";
+const mutationKeys = ["task", "deleteTask"];
 
 export const useDeleteTask = <
   TData = DeleteTaskResponse,
@@ -49,10 +49,10 @@ export const useDeleteTask = <
 ) => {
   const queryClient = useQueryClient();
   return useMutation<TData, TError, TVariables, TContext>(
-    ["tasks", mutationKey],
+    [...mutationKeys],
     (args) =>
       axios
-        .post<TData>(`/api/task/${mutationKey}`, args)
+        .post<TData>(`/api/${mutationKeys.join("/")}`, args)
         .then((res) => res.data),
     {
       ...options,
@@ -60,7 +60,7 @@ export const useDeleteTask = <
         if (options?.onSuccess) {
           await options.onSuccess(...props);
         }
-        await queryClient.invalidateQueries(["tasks"]);
+        await queryClient.invalidateQueries([mutationKeys[0]]);
       },
     }
   );

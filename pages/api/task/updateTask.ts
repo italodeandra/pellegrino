@@ -10,7 +10,7 @@ import { UseMutationOptions } from "react-query/types/react/types";
 import axios from "../../../src/axios";
 import ITask from "../../../src/collections/task/Task.interface";
 import { updateTask } from "../../../src/collections/task/Task.repository";
-import { invalidadeTasksQueriesEvent } from "./findTasks";
+import { invalidadeTaskQueriesEvent } from "./findTasks";
 
 export type UpdateTaskArgs = Pick<ITask, "_id"> & Partial<ITask>;
 
@@ -30,7 +30,7 @@ const handler: NextApiHandler<UpdateTaskResponse> = async (req, res) => {
       return notFound(res);
     }
 
-    socket.emit(invalidadeTasksQueriesEvent);
+    socket.emit(invalidadeTaskQueriesEvent);
 
     res.json(updatedCount);
   } catch (e) {
@@ -42,7 +42,7 @@ const handler: NextApiHandler<UpdateTaskResponse> = async (req, res) => {
 // noinspection JSUnusedGlobalSymbols
 export default handler;
 
-const mutationKey = "updateTask";
+const mutationKeys = ["task", "updateTask"];
 
 export const useUpdateTask = <
   TData = UpdateTaskResponse,
@@ -54,10 +54,10 @@ export const useUpdateTask = <
 ) => {
   const queryClient = useQueryClient();
   return useMutation<TData, TError, TVariables, TContext>(
-    ["tasks", mutationKey],
+    [...mutationKeys],
     (args) =>
       axios
-        .post<TData>(`/api/task/${mutationKey}`, args)
+        .post<TData>(`/api/${mutationKeys.join("/")}`, args)
         .then((res) => res.data),
     {
       ...options,
@@ -65,7 +65,7 @@ export const useUpdateTask = <
         if (options?.onSuccess) {
           await options.onSuccess(...props);
         }
-        await queryClient.invalidateQueries(["tasks"]);
+        await queryClient.invalidateQueries([mutationKeys[0]]);
       },
     }
   );
