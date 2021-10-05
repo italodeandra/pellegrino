@@ -1,10 +1,9 @@
+import AppBar from "@italodeandra/pijama/components/AppBar";
 import { GetLayout } from "@italodeandra/pijama/next/AppProps";
-import serialize from "@italodeandra/pijama/next/serialize";
 import { Toolbar, Typography } from "@material-ui/core";
 import { GetServerSideProps } from "next";
 import { QueryClient } from "react-query";
 import { dehydrate } from "react-query/hydration";
-import AppBar from "@italodeandra/pijama/components/AppBar";
 import TaskView from "../src/components/task/TaskView";
 import { prefetchFindTasks } from "./api/task/findTasks";
 
@@ -16,7 +15,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   return {
     props: {
-      dehydratedState: serialize(dehydrate(queryClient)),
+      dehydratedState: dehydrate(queryClient),
     },
   };
 };

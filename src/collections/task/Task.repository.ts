@@ -1,4 +1,4 @@
-import { createRepository } from "@italodeandra/pijama/next/createRepository";
+import createRepository from "@italodeandra/pijama/database/createRepository";
 import { Filter, ObjectId } from "mongodb";
 import ITask from "./Task.interface";
 

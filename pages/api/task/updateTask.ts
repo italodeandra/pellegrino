@@ -1,9 +1,9 @@
-import socket from "@italodeandra/pijama/next/socket";
+import socket from "@italodeandra/pijama/api/socket";
 import {
   badRequest,
   internalServerError,
   notFound,
-} from "@italodeandra/pijama/server/apiErrors";
+} from "@italodeandra/pijama/api/errors";
 import { NextApiHandler } from "next";
 import { useMutation, useQueryClient } from "react-query";
 import { UseMutationOptions } from "react-query/types/react/types";

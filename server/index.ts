@@ -1,4 +1,4 @@
-import { setupSocketServer } from "@italodeandra/pijama/next/socket";
+import { setupSocketServer } from "@italodeandra/pijama/api/socket";
 import { createServer } from "http";
 import next from "next";
 import { setupTaskCollection } from "../src/collections/task/Task.repository";

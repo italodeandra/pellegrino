@@ -1,5 +1,5 @@
-import socket from "@italodeandra/pijama/next/socket";
-import { internalServerError } from "@italodeandra/pijama/server/apiErrors";
+import socket from "@italodeandra/pijama/api/socket";
+import { internalServerError } from "@italodeandra/pijama/api/errors";
 import { NextApiHandler } from "next";
 import { useEffect } from "react";
 import { QueryClient, useQuery, useQueryClient } from "react-query";
