@@ -1,9 +1,11 @@
 import "@fontsource/inter/variable-full.css";
 import NProgress from "@italodeandra/pijama/components/NProgress";
 import Snackbar from "@italodeandra/pijama/components/Snackbar";
+import "@italodeandra/pijama/next/configureSuperJSON";
 import withEmotionCache from "@italodeandra/pijama/next/withEmotionCache";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
+import { deserializeProps } from "babel-plugin-superjson-next/dist/tools";
 import { DefaultSeo } from "next-seo";
 import Head from "next/head";
 import { useState } from "react";
@@ -17,7 +19,9 @@ const MyApp = withEmotionCache(({ Component, pageProps }) => {
 
   const getLayout = Component.getLayout || ((page) => page);
 
-  const component = getLayout(<Component {...pageProps} />);
+  const { dehydratedState, ...deserializedProps } = deserializeProps(pageProps);
+
+  const component = getLayout(<Component {...deserializedProps} />);
 
   // noinspection HtmlRequiredTitleElement
   return (
@@ -33,7 +37,7 @@ const MyApp = withEmotionCache(({ Component, pageProps }) => {
         <NProgress />
 
         <QueryClientProvider client={queryClient}>
-          <Hydrate state={pageProps.dehydratedState}>
+          <Hydrate state={dehydratedState}>
             {component}
 
             <div suppressHydrationWarning>
