@@ -4,7 +4,7 @@ import { Toolbar, Typography } from "@material-ui/core";
 import { GetServerSideProps } from "next";
 import { QueryClient } from "react-query";
 import { dehydrate } from "react-query/hydration";
-import TaskView from "../src/components/task/TaskView";
+import TaskView from "../src/components/Task/TaskView";
 import { prefetchFindTasks } from "./api/task/findTasks";
 
 // noinspection JSUnusedGlobalSymbols
